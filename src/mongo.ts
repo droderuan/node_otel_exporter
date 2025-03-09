@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { Collection, Db, Document, MongoClient } from "mongodb";
 
 const url = "mongodb://localhost:27017";
 
@@ -8,11 +8,22 @@ const client = new MongoClient(url, {
   auth: { username: "root", password: "example" },
 });
 
+let db: Db;
+
+export let mongo: {
+  db: Db;
+  collections: {
+    metrics: Collection<Document>;
+    traces: Collection<Document>;
+  };
+  end: Function;
+};
+
 export async function startMongo() {
   await client.connect();
-  const db = client.db(dbName);
+  db = client.db(dbName);
 
-  return {
+  mongo = {
     db,
     collections: {
       metrics: db.collection("metrics"),
@@ -22,4 +33,5 @@ export async function startMongo() {
       await client.close();
     },
   };
+  return;
 }
