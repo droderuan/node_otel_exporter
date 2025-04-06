@@ -268,6 +268,7 @@ export class ServiceMap extends EventEmitter {
 
       // Broadcast update via WebSocket if handler is set
       if (ServiceMap.wsHandler) {
+        console.log('Broadcasting update via WebSocket');
         ServiceMap.wsHandler.broadcastUpdate(serviceMapUpdates);
       }
     }

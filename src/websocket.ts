@@ -27,7 +27,7 @@ export class ServiceMapWebSocket {
       // Send initial service map state
       ServiceMap.getServiceMap().then(serviceMap => {
         const message = JSON.stringify({ type: 'initial', data: serviceMap });
-        console.debug(`[WS] Sending initial state to client: ${message}`);
+        console.debug(`[WS] Sending initial state to client`);
         ws.send(message);
       });
 
@@ -46,22 +46,22 @@ export class ServiceMapWebSocket {
   }
 
   public broadcastUpdate(updates: Map<string, Set<string>>): void {
-    const message = JSON.stringify({
-      type: 'update',
-      data: Array.from(updates.entries()).map(([source, targets]) => ({
-        source,
-        dependencies: Array.from(targets)
-      }))
-    });
+    // Get the latest service map data
+    ServiceMap.getServiceMap().then(serviceMap => {
+      const message = JSON.stringify({
+        type: 'update',
+        data: serviceMap
+      });
 
-    console.debug(`[WS] Broadcasting update to ${this.clients.size} clients: ${message}`);
+      console.debug(`[WS] Broadcasting update to ${this.clients.size} clients: ${message}`);
 
-    this.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      } else {
-        console.debug(`[WS] Skipping client in state ${client.readyState}`);
-      }
+      this.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(message);
+        } else {
+          console.debug(`[WS] Skipping client in state ${client.readyState}`);
+        }
+      });
     });
   }
 }

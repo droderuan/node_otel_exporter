@@ -82,6 +82,7 @@ routes.all(["", "/v1/metrics", "/v1/traces"], async (request, response) => {
       timestamp: Date.now(),
     });
   } else if (request.url === "/v1/traces") {
+    console.log("Receiving traces");
     const message = otelProto.ExportTraceServiceRequest.decode(buff) as any;
 
     message.resourceSpans.forEach((resourceSpan: { scopeSpans: any[] }) => {
