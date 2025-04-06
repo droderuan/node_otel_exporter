@@ -15,6 +15,7 @@ export let mongo: {
   collections: {
     metrics: Collection<Document>;
     traces: Collection<Document>;
+    serviceMap: Collection<Document>;
   };
   end: Function;
 };
@@ -28,6 +29,7 @@ export async function startMongo() {
     collections: {
       metrics: db.collection("metrics"),
       traces: db.collection("traces"),
+      serviceMap: db.collection("serviceMap"),
     },
     end: async () => {
       await client.close();
